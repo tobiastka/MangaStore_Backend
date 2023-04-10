@@ -1,12 +1,10 @@
 import { Router } from 'express'
-import { postMangaController } from '../controllers/mangaControllers.js'
+import { getMangaByIDController, getMangaController, postMangaController } from '../controllers/mangaControllers.js'
 
 const routerManga = Router()
 
-routerManga.get('/', (req, res) => {
-  res.send('Traer manga')
-})
-
 routerManga.post('/', postMangaController)
+routerManga.get('/', getMangaController)
+routerManga.get('/:id', getMangaByIDController)
 
 export default routerManga
