@@ -8,35 +8,11 @@ const Manga = sequelizeConnection.define('manga',
       autoIncrement: true,
       primaryKey: true
     },
-    nombre: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    autor: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     volumen: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    cantidadVolumenes: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    formato: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     imagen: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    resumenHistoria: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    genero: {
       type: DataTypes.STRING,
       allowNull: false
     }
