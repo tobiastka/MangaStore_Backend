@@ -4,11 +4,10 @@ export const postCollectionController = async (req, res) => {
   try {
     const { nombre, autor, cantidadVolumenes, formato, imagenBanner, resumenHistoria, genero } = req.body
 
-    const isCollection = await Collection.findAll({
+    const isCollection = await Collection.findOne({
       where: { nombre, autor }
     })
-    console.log(isCollection)
-    if (isCollection.length) {
+    if (isCollection) {
       res.status(201).json({ message: 'Se esta intentando crear una coleccion ya existente', id: isCollection.id, data: isCollection })
     } else {
       const newCollection = await Collection.create({ nombre, autor, cantidadVolumenes, formato, imagenBanner, resumenHistoria, genero })
