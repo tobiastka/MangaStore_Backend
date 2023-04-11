@@ -1,12 +1,73 @@
+import Collection from '../models/collectionModel.js'
 import Manga from '../models/mangaModel.js'
+import { Op } from 'sequelize'
 
 export const postMangaController = async (req, res) => {
   try {
-    const { nombre, autor, volumen, cantidadVolumenes, formato, imagen, resumenHistoria, genero } = req.body
-    const newManga = await Manga.create({ nombre, autor, volumen, cantidadVolumenes, formato, imagen, genero, resumenHistoria })
-    res.status(201).json({ message: 'Nuevo manga agregado correctamente', data: newManga })
+    const { nombre, volumen, imagen } = req.body
+    const isCollection = await Collection.findOne({
+      where: {
+        nombre
+      }
+    })
+    if (!isCollection) {
+      res.status(400).json({ message: 'Se intentó agregar un manga a una colección no existente', data: isCollection })
+    } else {
+      const [newManga, wasCreated] = await Manga.findOrCreate({
+        where: {
+          volumen
+        },
+        defaults: {
+          imagen
+        }
+      })
+      if (wasCreated) {
+        await newManga.setCollection(isCollection)
+        res.status(201).json({ message: 'Nuevo manga agregado correctamente', id: newManga.id, data: newManga })
+      } else {
+        res.status(201).json({ message: 'Volumen de manga ya existente', id: newManga.id, data: newManga })
+      }
+    }
   } catch (error) {
-    // console.log(error)
-    res.status(500).json({ message: 'Error al crear un nuevo manga', error })
+    res.status(500).json({ message: 'Ha ocurrido un error al crear un nuevo manga', error })
+  }
+}
+
+export const getMangaController = async (req, res) => {
+  try {
+    const { query } = req
+
+    const mangaSearch = await Manga.findAll({
+      include: {
+        model: Collection,
+        where: {
+          nombre: {
+            [Op.iLike]: `%${query.nombre || ''}%`
+          },
+          autor: {
+            [Op.iLike]: `%${query.autor || ''}%`
+          },
+          formato: {
+            [Op.iLike]: `%${query.formato || ''}%`
+          },
+          genero: {
+            [Op.iLike]: `%${query.genero || ''}%`
+          }
+        }
+      }
+    })
+    res.status(200).json(mangaSearch)
+  } catch (error) {
+    res.status(404).json({ message: 'Error al encontrar manga', error })
+  }
+}
+
+export const getMangaByIDController = async (req, res) => {
+  try {
+    const { id } = req.params
+    const mangaSearchByID = await Manga.findByPk(1, { include: Collection })
+    res.status(200).json(mangaSearchByID)
+  } catch (error) {
+    res.status(404).json({ message: `Error al encontrar manga con id: ${req.params.id}`, error })
   }
 }
