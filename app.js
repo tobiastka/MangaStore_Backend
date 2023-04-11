@@ -3,9 +3,16 @@ import routerManga from './routes/mangaRoutes.js'
 import dotenv from 'dotenv'
 import { sequelizeConnection } from './db.js'
 // ----- MODELOS ------>
-import './models/mangaModel.js'
-import { initialDataManga } from './data/updateDB.js'
+import Manga from './models/mangaModel.js'
+import Colletion from './models/collectionModel.js'
+
+import { initialDataManga } from './data/dataMangaLoader.js'
 import bodyParser from 'body-parser'
+import routerCollection from './routes/collectionRoutes.js'
+
+// ----- RELACIONES ---->
+Colletion.hasMany(Manga)
+Manga.belongsTo(Colletion)
 
 dotenv.config()
 
@@ -15,12 +22,12 @@ sequelizeConnection.authenticate()
   .then(() => {
     console.log('Conexión a la base de datos establecida con éxito.')
 
-    sequelizeConnection.sync({ force: true })
+    sequelizeConnection.sync({ force: false })
       .then(() => {
         console.log('Tablas creadas correctamente')
         app.listen(PORT, () => {
           console.log('Server ON, on port:', PORT)
-          initialDataManga()
+          // initialDataManga()
         })
       })
       .catch((error) => {
@@ -33,3 +40,4 @@ sequelizeConnection.authenticate()
 
 app.use(bodyParser.json())
 app.use('/manga', routerManga)
+app.use('/collection', routerCollection)

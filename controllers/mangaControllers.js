@@ -65,7 +65,7 @@ export const getMangaController = async (req, res) => {
 export const getMangaByIDController = async (req, res) => {
   try {
     const { id } = req.params
-    const mangaSearchByID = await Manga.findByPk(1, { include: Collection })
+    const mangaSearchByID = await Manga.findByPk(id, { include: Collection })
     res.status(200).json(mangaSearchByID)
   } catch (error) {
     res.status(404).json({ message: `Error al encontrar manga con id: ${req.params.id}`, error })
