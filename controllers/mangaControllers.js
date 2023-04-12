@@ -10,18 +10,27 @@ export const postMangaController = async (req, res) => {
         nombre
       }
     })
+    // console.log(isCollection)
     if (!isCollection) {
       res.status(400).json({ message: 'Se intentó agregar un manga a una colección no existente', data: isCollection })
     } else {
+      console.log(nombre, volumen, imagen)
       const [newManga, wasCreated] = await Manga.findOrCreate({
         where: {
           volumen
+        },
+        include: {
+          model: Collection,
+          where: {
+            nombre
+          }
         },
         defaults: {
           imagen
         }
       })
       if (wasCreated) {
+        console.log(nombre)
         await newManga.setCollection(isCollection)
         res.status(201).json({ message: 'Nuevo manga agregado correctamente', id: newManga.id, data: newManga })
       } else {
