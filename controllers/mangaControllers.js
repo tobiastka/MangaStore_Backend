@@ -4,17 +4,15 @@ import { Op } from 'sequelize'
 
 export const postMangaController = async (req, res) => {
   try {
-    const { nombre, volumen, imagen } = req.body
+    const { nombre, volumen, imagen, stock, precioTomo } = req.body
     const isCollection = await Collection.findOne({
       where: {
         nombre
       }
     })
-    // console.log(isCollection)
     if (!isCollection) {
       res.status(400).json({ message: 'Se intentó agregar un manga a una colección no existente', data: isCollection })
     } else {
-      console.log(nombre, volumen, imagen)
       const [newManga, wasCreated] = await Manga.findOrCreate({
         where: {
           volumen
@@ -26,14 +24,17 @@ export const postMangaController = async (req, res) => {
           }
         },
         defaults: {
-          imagen
+          imagen,
+          stock: stock || 0,
+          precioTomo
         }
       })
       if (wasCreated) {
-        console.log(nombre)
+        // console.log(wasCreated)
         await newManga.setCollection(isCollection)
         res.status(201).json({ message: 'Nuevo manga agregado correctamente', id: newManga.id, data: newManga })
       } else {
+        // console.log(wasCreated)
         res.status(201).json({ message: 'Volumen de manga ya existente', id: newManga.id, data: newManga })
       }
     }

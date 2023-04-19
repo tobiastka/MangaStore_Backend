@@ -8,6 +8,7 @@ export const postCollectionController = async (req, res) => {
     const isCollection = await Collection.findOne({
       where: { nombre, autor }
     })
+
     if (isCollection) {
       res.status(201).json({ message: 'Se esta intentando crear una coleccion ya existente', id: isCollection.id, data: isCollection })
     } else {
