@@ -37,6 +37,9 @@ const Collection = sequelizeConnection.define('collection',
       allowNull: false
     }
 
+  },
+  {
+    timestamps: false
   }
 
 )

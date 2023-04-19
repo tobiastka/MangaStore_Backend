@@ -15,7 +15,18 @@ const Manga = sequelizeConnection.define('manga',
     imagen: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    stock: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    precioTomo: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
+  },
+  {
+    timestamps: false
   }
 )
 
