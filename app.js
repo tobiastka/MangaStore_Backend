@@ -5,10 +5,12 @@ import { sequelizeConnection } from './db.js'
 // ----- MODELOS ------>
 import Manga from './models/mangaModel.js'
 import Colletion from './models/collectionModel.js'
+import './models/bannerImageModel.js'
 
 import { initialDataManga } from './data/dataMangaLoader.js'
 import bodyParser from 'body-parser'
 import routerCollection from './routes/collectionRoutes.js'
+import routerBannerImage from './routes/bannerImageRoutes.js'
 
 // ----- RELACIONES ---->
 Colletion.hasMany(Manga)
@@ -22,12 +24,12 @@ sequelizeConnection.authenticate()
   .then(() => {
     console.log('Conexión a la base de datos establecida con éxito.')
 
-    sequelizeConnection.sync({ force: false })
+    sequelizeConnection.sync({ force: true })
       .then(() => {
         console.log('Tablas creadas correctamente')
         app.listen(PORT, () => {
           console.log('Server ON, on port:', PORT)
-          // initialDataManga()
+          initialDataManga()
         })
       })
       .catch((error) => {
@@ -39,5 +41,10 @@ sequelizeConnection.authenticate()
   })
 
 app.use(bodyParser.json())
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  next()
+})
 app.use('/manga', routerManga)
 app.use('/collection', routerCollection)
+app.use('/bannerImage', routerBannerImage)
