@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { postCollectionController } from '../controllers/collectionControllers.js'
+import { getCollectionController, postCollectionController } from '../controllers/collectionControllers.js'
 
 const routerCollection = Router()
 
 routerCollection.post('/', postCollectionController)
+routerCollection.get('/', getCollectionController)
 export default routerCollection
 /*
 Test Call
